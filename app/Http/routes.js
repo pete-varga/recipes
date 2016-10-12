@@ -18,4 +18,5 @@
 const Route = use('Route')
 
 //Route.on('/').render('welcome')
-Route.on('/').render('main.njk')
+//Route.on('/').render('main.njk')
+Route.get('/','RecipeController.list');

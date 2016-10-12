@@ -20,7 +20,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Receptkonyv</a>
+            <a class="navbar-brand" href="#">{{ name }}</a>
             </div>
 
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
@@ -37,25 +37,26 @@
 
     <div class="container">
         <div class="row">
+
+            {% for category in categories %}
             <div class="col-md-4 col-sm-6 col-xs-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        Levesek
+                        {{ category.name }}
                         <span class="label label-default pull-right" >Default</span>
                     </div>
                     <ul class="list-group">
+                        {% for recipe in category.recipes %}
                         <li class="list-group-item">
-                            Gulyasleves
+                            {{ recipe.name }}
                         </li>
-                        <li class="list-group-item">
-                            Paradicsomleves
-                        </li>
-                        <li class="list-group-item">
-                            Rizsleves
-                        </li>
+                        {% endfor %}
                     </ul>
                 </div>
             </div>
+            {% endfor %}
+
+
         </div>
     </div>
     
