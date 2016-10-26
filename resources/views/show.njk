@@ -1,0 +1,15 @@
+{% extends "parent.njk" %}
+
+{% block content %}
+<div class="row">
+    <h1>{{ recipe.name }}</h1>
+    <h3>{{ recipe.category.name }}</h3>
+    <p>{{ recipe.description }}</p>
+    <a href="/recipe/{{ recipe.id }}/edit" class="btn btn-primary pull-left" style="margin-right: 10px;">Recept szerkesztese</a>
+    <form action="/recipe/{{ recipe.id }}/delete" method="POST">
+        {{ csrfField}}
+        <input type="submit" value="Recept torlese" class="btn btn-danger" value="Recept torlese">
+    </form>
+</div>
+
+{% endblock %}

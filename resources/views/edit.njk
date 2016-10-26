@@ -1,0 +1,46 @@
+{% extends "parent.njk" %}
+
+{% block content %}
+<div class="row">
+    <ul>
+        {% for error in old('errors') %}
+        <li>{{ error.message }}</li>
+        {% endfor %}
+    </ul>
+    <form class="form-horizontal" method="POST">
+        {{ csrfField }}
+        <fieldset>
+            <legend>Uj recept</legend>
+            <div class="form-group">
+            <label for="name" class="col-lg-2 control-label">Recept neve</label>
+            <div class="col-lg-10">
+                <input name="name" value="{{ recipe.name }}" type="text" class="form-control">
+            </div>
+            </div>
+            <div class="form-group">
+            <label for="textArea" class="col-lg-2 control-label">Recept leirasa</label>
+            <div class="col-lg-10">
+                <textarea name="description" class="form-control" style="width: 30%" rows="7">{{ recipe.description }}</textarea>
+                <span class="help-block">Ebbe a dobozba irja be a recept hozzavaloit es elkeszitesenek leirasat.</span>
+            </div>
+            </div>
+            <div class="form-group">
+            <label for="select" class="col-lg-2 control-label">Kategoria</label>
+            <div class="col-lg-10" style="width: 20%;">
+                <select name="category_id" class="form-control">
+                {% for category in categories %}
+                <option {{'selected' if recipe.category_id == category.id }} value="{{ category.id }}">{{ category.name }}</option>
+                {% endfor %}
+                </select>
+            </div>
+            </div>
+            <div class="form-group">
+            <div class="col-lg-10 col-lg-offset-2">
+                <button type="reset" class="btn btn-default">Megsem</button>
+                <button type="submit" class="btn btn-primary">Recept frissitese</button>
+            </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+{% endblock %}

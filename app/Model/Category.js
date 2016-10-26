@@ -4,7 +4,7 @@ const Lucid = use('Lucid')
 
 class Category extends Lucid {
     recipes() {
-        return this.belongsTo('App/Model/Recipe')
+        return this.hasMany('App/Model/Recipe')
     }
 }
 
