@@ -29,7 +29,12 @@
                 <li><a href="/create">Uj recept felvetele</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
+                {% if currentUser %}
+                <li>Logged in user: {{ currentUser.username }}</li>
+                <li><a href="/logout">Bejelentkezes</a></li>
+                {% else %}
                 <li><a href="#">Bejelentkezes</a></li>
+                {% endif %}
             </ul>
             </div>
         </div>
