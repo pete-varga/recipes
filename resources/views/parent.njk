@@ -29,11 +29,19 @@
                 <li><a href="/create">Uj recept felvetele</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <form action="/search" method="POST">
+                    {{ csrfField }}
+                        <input name="q"/>
+                        <input type="submit" value="Search"/>
+                    </form>
+                </li>
                 {% if currentUser %}
                 <li>Logged in user: {{ currentUser.username }}</li>
                 <li><a href="/logout">Bejelentkezes</a></li>
                 {% else %}
                 <li><a href="#">Bejelentkezes</a></li>
+                <li><a href="/register">Regisztracio</a></li>
                 {% endif %}
             </ul>
             </div>

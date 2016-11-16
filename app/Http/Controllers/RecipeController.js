@@ -84,6 +84,27 @@ class RecipeController {
 
         res.redirect('/');
     }
+
+    * search(req, res){
+        var query = req.input('q') || '';
+        var page = req.input('page') || 1;
+
+
+        var recipes = yield Recipe.query()
+            .where(function(){
+                if(query!==''){
+                    this.where('name', 'LIKE', '%'+query+'%');
+                }
+            })
+            .with('category')
+            .paginate(page, 2)
+
+            console.log(recipes.toJSON())
+
+        yield res.sendView('search', {
+            recipes: recipes.toJSON()
+        });
+    }
 }
 
 module.exports = RecipeController

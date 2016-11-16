@@ -31,3 +31,4 @@ Route.post('/register','UserController.registerSubmit');
 Route.get('/login','UserController.login');
 Route.post('/login','UserController.loginSubmit');
 Route.get('/logout','UserController.logout');
+Route.post('/search','RecipeController.search');
