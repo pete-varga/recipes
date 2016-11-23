@@ -1,5 +1,79 @@
 {% extends "parent.njk" %}
 
+{% block scripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.5/validator.min.js"></script>
+    <script>
+        $(function(){
+            var description = $('#description').val();
+
+            var reszek = description.split('\n\n');
+            var hozzavalok;
+            if(reszek.length>1){
+                hozzavalok = reszek[0];
+                $('#description').val(reszek.slice('1').join())
+            }else{
+                hozzavalok = '';
+            }
+
+            var hozzavaloSorok = hozzavalok.split('\n');
+            for(var i = 0; i < hozzavaloSorok.length; i++){
+                var sor = hozzavaloSorok[i];
+                if(sor === ''){
+                    continue;
+                }
+                var reszek = sor.split(' ');
+                ujSor({
+                    mennyiseg: reszek[0],
+                    hozzavalok: reszek.slice(1).join(' ') //elso elemtol kezdve az osszeset
+                });
+            }
+
+            var $hozzavalok = $('#hozzavalok');
+            for(var i = 0; i < hozzavaloSorok.length; i++){
+                var hozzavalo = hozzavaloSorok[i];
+                var html = `<div class="form-group smart-ingredient">
+                    <div class="col-md-3">
+                        <input class="form-control smart-ingredient-amount" value="${hozzavalo.mennyiseg}" type="text">
+                    </div>
+                    <div class="col-md-7">
+                        <input class="form-control smart-ingredient-name" value="${hozzavalo.hozzavalo}" type="text">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-danger btn-block">
+                            <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </div>`;
+            }
+
+            var sor = $(html);
+            sor.on('click', '.btn-danger', function(){
+                $(this).closest('.smart-ingredient').remove(); //this = amire rakattintottunk
+            });
+            
+            $hozzavalok.append(sor);
+
+            $('#add').on('click', function(){
+                ujSor({
+
+                });
+            });
+
+            $('#form').on('submit', function(){
+                var str = '';
+                $('.smart-ingredient').each(function(){
+                    var mennyiseg = $(this).find('.smart-ingredient-amount').val();
+                    var hozzavalo = $(this).find('.smart-ingredient-name').val();
+                    str+=mennyiseg + ' ' + hozzavalo + '\n';
+                });
+                str+='\n';
+
+                description.val(str + $description.val());
+            });
+        });
+    </script>
+{% endblock %}
+
 {% block content %}
 <div class="row">
     <ul>
@@ -7,20 +81,29 @@
         <li>{{ error.message }}</li>
         {% endfor %}
     </ul>
-    <form class="form-horizontal" method="POST">
+    <form class="form-horizontal" method="POST" data-toggle="validator" id="form">
         {{ csrfField }}
         <fieldset>
             <legend>Uj recept</legend>
             <div class="form-group">
-            <label for="inputEmail" class="col-lg-2 control-label">Recept neve</label>
+            <label for="name" class="col-lg-2 control-label">Recept neve</label>
             <div class="col-lg-10">
-                <input name="name" value="{{ old('name') }}" type="text" class="form-control">
+                <input id="name" name="name" value="{{ old('name') }}" type="text" class="form-control" pattern="^[_A-z0-9]{1,}$" data-error="Custom error message">
+                <div class="help-block with-errors">Hey look, this one has feedback icons!</div>
             </div>
+            </div>
+            <div id="hozzavalok">
+                
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-success btn-block">
+                    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                </button>
             </div>
             <div class="form-group">
             <label for="textArea" class="col-lg-2 control-label">Recept leirasa</label>
             <div class="col-lg-10">
-                <textarea name="description" class="form-control" style="width: 30%" rows="7">{{ old('description') }}</textarea>
+                <textarea id="description" name="description" class="form-control" style="width: 30%" rows="7">{{ old('description') }}</textarea>
                 <span class="help-block">Ebbe a dobozba irja be a recept hozzavaloit es elkeszitesenek leirasat.</span>
             </div>
             </div>
