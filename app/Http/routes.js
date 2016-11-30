@@ -32,3 +32,8 @@ Route.get('/login','UserController.login');
 Route.post('/login','UserController.loginSubmit');
 Route.get('/logout','UserController.logout');
 Route.post('/search','RecipeController.search');
+Route.get('/search','RecipeController.search');
+Route.group('ajax', function () {
+  Route.delete('/recipe/:id/delete', 'RecipeController.ajaxDelete')//.middleware('auth')
+  Route.get('/search', 'RecipeController.ajaxSearch')//.middleware('auth')
+}).prefix('/ajax')

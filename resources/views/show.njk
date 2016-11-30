@@ -1,15 +1,33 @@
 {% extends "parent.njk" %}
 
+{% block scripts %}
+    <script src="/show.js"></script>
+{% endblock %}
+
 {% block content %}
 <div class="row">
     <h1>{{ recipe.name }}</h1>
     <h3>{{ recipe.category.name }}</h3>
     <p>{{ recipe.description }}</p>
     <a href="/recipe/{{ recipe.id }}/edit" class="btn btn-primary pull-left" style="margin-right: 10px;">Recept szerkesztese</a>
-    <form action="/recipe/{{ recipe.id }}/delete" method="POST">
+    <form id="torol" action="/recipe/{{ recipe.id }}/delete" method="POST">
         {{ csrfField}}
         <input type="submit" value="Recept torlese" class="btn btn-danger" value="Recept torlese">
     </form>
+</div>
+
+<div class="modal fade confirm-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+        <div class="modal-body">
+            Biztosan törölni szeretnéd?
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-success modal-ok" data-dismiss="modal">OK</button>
+            <button type="button" class="btn btn-danger modal-cancel" data-dismiss="modal">Mégse</button>
+        </div>
+        </div>
+    </div>
 </div>
 
 {% endblock %}

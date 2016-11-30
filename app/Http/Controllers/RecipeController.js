@@ -85,6 +85,16 @@ class RecipeController {
         res.redirect('/');
     }
 
+    * ajaxDelete(req, res){
+        var recipe = yield Recipe.findBy('id', req.param('id')); //eredeti recept adatainak lekerese
+
+        yield recipe.delete();
+
+        yield res.ok({
+            message: "OK!"
+        });
+    }
+
     * search(req, res){
         var query = req.input('q') || '';
         var page = req.input('page') || 1;
@@ -104,6 +114,21 @@ class RecipeController {
         yield res.sendView('search', {
             recipes: recipes.toJSON()
         });
+    }
+
+    * ajaxSearch(req, res){
+        var query = req.input('q');
+        if(!query){
+            res.ok([]);
+            return;
+        }
+        
+        var recipes = yield Recipe.query()
+            .where(function(){
+                    this.where('name', 'LIKE', '%'+query+'%');
+            });
+
+        res.ok(recipes);
     }
 }
 
