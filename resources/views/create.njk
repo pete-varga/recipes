@@ -4,130 +4,108 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.5/validator.min.js"></script>
     <script>
         $(function(){
-            var description = $('#description').val();
 
-            var reszek = description.split('\n\n');
-            var hozzavalok;
-            if(reszek.length>1){
-                hozzavalok = reszek[0];
-                $('#description').val(reszek.slice('1').join())
-            }else{
-                hozzavalok = '';
-            }
+        var $hozzavalok=$('#hozzavalok');
+        function ujSor(hozzavalo){
+        var html=`<div class="form-group smart-ingredient">
+            <div class="col-md-3">
+                <input class="form-control smart-ingredient-amount" value="${hozzavalo.mennyiseg}" type="text">
+            </div>
+            <div class="col-md-7">
+                <input class="form-control smart-ingredient-name" value="${hozzavalo.hozzavalo}" type="text">
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-danger btn-block">
+                    <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>`;
 
-            var hozzavaloSorok = hozzavalok.split('\n');
-            for(var i = 0; i < hozzavaloSorok.length; i++){
-                var sor = hozzavaloSorok[i];
-                if(sor === ''){
-                    continue;
-                }
-                var reszek = sor.split(' ');
-                ujSor({
-                    mennyiseg: reszek[0],
-                    hozzavalok: reszek.slice(1).join(' ') //elso elemtol kezdve az osszeset
-                });
-            }
-
-            var $hozzavalok = $('#hozzavalok');
-            for(var i = 0; i < hozzavaloSorok.length; i++){
-                var hozzavalo = hozzavaloSorok[i];
-                var html = `<div class="form-group smart-ingredient">
-                    <div class="col-md-3">
-                        <input class="form-control smart-ingredient-amount" value="${hozzavalo.mennyiseg}" type="text">
-                    </div>
-                    <div class="col-md-7">
-                        <input class="form-control smart-ingredient-name" value="${hozzavalo.hozzavalo}" type="text">
-                    </div>
-                    <div class="col-md-2">
-                        <button type="button" class="btn btn-danger btn-block">
-                            <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
-                        </button>
-                    </div>
-                </div>`;
-            }
-
-            var sor = $(html);
-            sor.on('click', '.btn-danger', function(){
-                $(this).closest('.smart-ingredient').remove(); //this = amire rakattintottunk
+            var sor=$(html)
+            sor.on('click','.btn-danger', function (){
+            $(this).closest('.smart-ingredient').remove();
             });
-            
             $hozzavalok.append(sor);
+        }
 
-            $('#add').on('click', function(){
-                ujSor({
-
-                });
-            });
-
-            $('#form').on('submit', function(){
-                var str = '';
-                $('.smart-ingredient').each(function(){
-                    var mennyiseg = $(this).find('.smart-ingredient-amount').val();
-                    var hozzavalo = $(this).find('.smart-ingredient-name').val();
-                    str+=mennyiseg + ' ' + hozzavalo + '\n';
-                });
-                str+='\n';
-
-                description.val(str + $description.val());
+        $('#add').on('click', function(){
+            ujSor({
+            mennyiseg:'1',
+            hozzavalo:''
             });
         });
-    </script>
+
+
+        var $description=$('#description');
+
+        $('#form').on('submit', function(){
+            var str='';
+            $('.smart-ingredient').each(function(){
+            var mennyiseg=$(this).find('.smart-ingredient-amount').val();
+            var hozzavalo=$(this).find('.smart-ingredient-name').val();
+            str+= mennyiseg + ' ' + hozzavalo+'\n';
+            });  
+            str+='\n';
+
+            $description.val(str + $description.val());
+
+        });
+
+
+
+        var description = $description.val();
+        var reszek = description.split('\n\n');
+        var hozzavalok;
+        if(reszek.length>1){
+            hozzavalok=reszek[0];
+            $description.val(reszek.slice(1).join('\n\n'));
+        }else{
+            hozzavalok='';
+        }
+
+        var hozzavaloSorok = hozzavalok.split('\n');
+        for(var i=0;i<hozzavaloSorok.length;i++){
+            var sor = hozzavaloSorok[i];
+            if(sor === ''){
+            continue;
+            }
+            var reszek=sor.split(' ');
+            ujSor({
+            mennyiseg:reszek[0],
+            hozzavalo:reszek.slice(1).join(' ')
+            });
+        }
+        });
+        </script>
 {% endblock %}
 
 {% block content %}
 <div class="row">
-    <ul>
-        {% for error in old('errors') %}
-        <li>{{ error.message }}</li>
-        {% endfor %}
-    </ul>
-    <form class="form-horizontal" method="POST" data-toggle="validator" id="form">
-        {{ csrfField }}
-        <fieldset>
-            <legend>Uj recept</legend>
-            <div class="form-group">
-            <label for="name" class="col-lg-2 control-label">Recept neve</label>
-            <div class="col-lg-10">
-                <input id="name" name="name" value="{{ old('name') }}" type="text" class="form-control" pattern="^[_A-z0-9]{1,}$" data-error="Custom error message">
-                <div class="help-block with-errors">Hey look, this one has feedback icons!</div>
-            </div>
-            </div>
-            <div class="form-group">
-                <div id="hozzavalok" class="col-lg-10">
-                    
-                </div>
-                <div class="form-group">
-                    <div class="col-lg-10 col-lg-offset-2">
-                        <button id="add" type="button" class="btn btn-success btn-block">
-                            <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-            <label for="textArea" class="col-lg-2 control-label">Recept leirasa</label>
-            <div class="col-lg-10">
-                <textarea id="description" name="description" class="form-control" style="width: 30%" rows="7">{{ old('description') }}</textarea>
-                <span class="help-block">Ebbe a dobozba irja be a recept hozzavaloit es elkeszitesenek leirasat.</span>
-            </div>
-            </div>
-            <div class="form-group">
-            <label for="select" class="col-lg-2 control-label">Kategoria</label>
-            <div class="col-lg-10" style="width: 20%;">
-                <select name="category_id" class="form-control">
-                {% for category in categories %}
-                <option value="{{ category.id }}">{{ category.name }}</option>
-                {% endfor %}
-                </select>
-            </div>
-            </div>
-            <div class="form-group">
-            <div class="col-lg-10 col-lg-offset-2">
-                <button type="reset" class="btn btn-default">Megsem</button>
-                <button type="submit" class="btn btn-primary">Recept bekuldese</button>
-            </div>
-            </div>
-        </fieldset>
-    </form>
+  <ul>
+    {% for error in old('errors') %}
+      <li>{{ error.message }}</li>
+    {% endfor %}
+  </ul>
+  <form method="POST" data-toggle="validator" id="form">
+    {{ csrfField }}
+    <div class="form-group">
+      <label for="name" class="control-label">Név</label>
+      <input id="name" name="name" value="{{ old('name') }}" data-error="A név csak angol betűket és számokat tartalmazhat" />
+      <div class="help-block with-errors"></div>
+    </div>
+    <div id="hozzavalok"></div>
+    <div class="col-md-2">
+        <button type="button" class="btn btn-success btn-block" id="add">
+            <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+        </button>
+    </div>
+    <textarea id="description" name="description">{{ old('description') }}</textarea>
+    <select name="category_id">
+      {% for category in categories %}
+      <option value="{{ category.id }}">{{ category.name }}</option>
+      {% endfor %}
+    </select>
+    <input type="submit"/>
+  </form>
 </div>
 {% endblock %}

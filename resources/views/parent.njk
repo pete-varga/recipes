@@ -12,6 +12,7 @@
     <link href="/search.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="/search.js"></script>
+    <script src="/login.js"></script>
     {% block scripts %} {% endblock %}
   </head>
   <body>
@@ -43,9 +44,9 @@
                 </li>
                 {% if currentUser %}
                 <li>Logged in user: {{ currentUser.username }}</li>
-                <li><a href="/logout">Bejelentkezes</a></li>
+                <li><a href="/logout">Kijelentkezes</a></li>
                 {% else %}
-                <li><a href="#">Bejelentkezes</a></li>
+                <li><a id="login-link" href="/login">Bejelentkezes</a></li>
                 <li><a href="/register">Regisztracio</a></li>
                 {% endif %}
             </ul>
